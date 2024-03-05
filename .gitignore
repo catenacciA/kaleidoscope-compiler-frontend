@@ -2,3 +2,6 @@ c_cpp_properties.json
 test_progetto
 obj
 bin
+src/parser.cpp
+src/scanner.cpp
+include/parser.hpp
