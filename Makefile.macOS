@@ -1,0 +1,37 @@
+CXX := clang++
+CXXFLAGS := -g -std=c++17 -Wall -Wextra -pedantic -Iinclude -I/opt/homebrew/opt/llvm/include -fno-exceptions -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+LDFLAGS := `llvm-config --cxxflags --ldflags --libs --libfiles --system-libs`
+
+SRCDIR := src
+OBJDIR := obj
+BINDIR := bin
+GRAMMARDIR := grammar
+INCLUDEDIR := include
+
+.PHONY: all clean
+
+all: $(BINDIR)/kcomp
+
+$(BINDIR)/kcomp: $(OBJDIR)/driver.o $(OBJDIR)/parser.o $(OBJDIR)/scanner.o $(OBJDIR)/kcomp.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+$(OBJDIR)/kcomp.o: $(SRCDIR)/kcomp.cpp $(INCLUDEDIR)/driver.hpp
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
+
+$(OBJDIR)/parser.o: $(SRCDIR)/parser.cpp
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
+
+$(OBJDIR)/scanner.o: $(SRCDIR)/scanner.cpp $(INCLUDEDIR)/parser.hpp
+	$(CXX) -c $< -o $@ $(CXXFLAGS) -fexceptions
+
+$(OBJDIR)/driver.o: $(SRCDIR)/driver.cpp $(INCLUDEDIR)/parser.hpp $(INCLUDEDIR)/driver.hpp
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
+
+$(SRCDIR)/parser.cpp $(INCLUDEDIR)/parser.hpp: $(GRAMMARDIR)/parser.yy
+	bison -Wconflicts-sr -Wconflicts-rr -Wcounterexamples --defines=$(INCLUDEDIR)/parser.hpp -o $(SRCDIR)/parser.cpp $<
+
+$(SRCDIR)/scanner.cpp: $(GRAMMARDIR)/scanner.ll
+	flex -o $@ $<
+
+clean:
+	rm -f $(OBJDIR)/*.o $(BINDIR)/kcomp $(SRCDIR)/scanner.cpp $(SRCDIR)/parser.cpp $(INCLUDEDIR)/parser.hpp
