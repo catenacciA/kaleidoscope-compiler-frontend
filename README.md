@@ -1,51 +1,72 @@
-# README
+# KComp Frontend Compiler
 
-## Struttura del Progetto
-- `kcomp.cpp`: Il file principale del compilatore.
-- `driver.hpp`: Definisce la classe `driver` e le classi AST
-- `driver.cpp`: Implementa le funzionalità di `driver` e delle classi AST
-- `parser.yy`: File della grammatica Bison per il parser.
-- `scanner.ll`: File Flex/Lex per lo scanner.
+## Overview
 
-## Compilazione con Makefile
+KComp is a frontend compiler for a specific Kaleidoscope-like language. This project utilizes LLVM for generating Intermediate Representation (IR), along with Bison and Flex for parsing and lexical analysis, respectively.
 
-Per la compilazione, sono disponibili due Makefile distinti, uno per macOS e uno per Linux. Ovviamente, è necessario scegliere il Makefile appropriato in base al sistema operativo utilizzato.
+## Prerequisites
 
-### Comandi Makefile
-Per eseguire i comandi di compilazione, assicurarsi di specificare il Makefile appropriato usando l'opzione `-f` con il comando `make`. Ad esempio, per utilizzare il Makefile per Linux, si digiti:
+Before compiling or using `KComp`, ensure you have the following dependencies installed on your machine:
 
-```bash
-make -f Makefile.Linux [comando]
-```
+- **LLVM 17**: For backend IR generation and optimization.
 
-#### Comandi Disponibili
-- `make -f [Makefile] all`: Compila tutti i componenti necessari per creare l'eseguibile `kcomp`.
-- `make -f [Makefile] clean`: Rimuove tutti i file generati, inclusi gli eseguibili.
-- `make -f [Makefile] clean_obj`: Rimuove solo i file oggetto
+- **Clang++**: Required for compiling the project. Ensure it is compatible with LLVM 17.
 
+- **Bison version 3.8.2**: For parsing the language syntax.
 
-## Utilizzo
-Per utilizzare kcomp, eseguire il seguente comando dalla riga di comando:
+- **Flex version 2.6.4**: For lexical analysis.
 
-```
-kcomp [opzioni] <file.k>
-```
+Please refer to the respective official documentation for installation instructions for these dependencies.
 
-Dove `<file.k>` è il file sorgente Kaleidoscope da compilare. Le opzioni disponibili sono:
+## Compilation with Makefile
 
-- `-p`: Abilita le tracce di debug nel parser.
-- `-s`: Abilita le tracce di debug nello scanner.
+The project includes Makefiles for both macOS and Linux, designed to accommodate different operating systems. During the compilation process, two additional directories are created: `obj` for object files and `bin` for the executable file.
 
-Esempio:
+### Makefile Commands
+
+Use the `-f` option with the `make` command to specify the appropriate Makefile for your system. For Linux, the command would be:
 
 ```bash
-kcomp -p -s esempio.k
+
+make -f Makefile.Linux [command]
+
 ```
 
-## Test
-Per comodità vengono già forniti tutti i programmi di test presenti nella cartella `test_progetto`. Nella cartella è presente un makefile che chiama il compilatore con il compando `../kcomp` e compila il file `.ll` generato e infine fa il linking con i file `.cpp` presenti nella cartella genrando gli eseguibili dei test.
+#### Available Commands
 
-## Note Aggiuntive
-- Il compilatore KComp genera l'IR sullo `stderr`.
-- Per ottenere l'output del compilatore, è necessario utilizzare il comando `2>` per reindirizzare lo `stderr` su un file `.ll`:
-  - `kcomp esempio.k 2> esempio.ll`
+- `make -f [Makefile] all`: Compiles necessary components, resulting in the `kcomp` executable being placed in the `bin` directory.
+
+- `make -f [Makefile] clean`: Removes all generated files, including the contents of the `obj` and `bin` directories.
+
+## Usage
+
+After compilation, you can find the `kcomp` executable in the `bin` directory. To use it, execute the following command:
+
+```bash
+
+bin/kcomp [options] <file.k>
+
+```
+
+Where `<file.k>` is your Kaleidoscope-like source file. Available options include:
+
+- `-p`: Enables debug traces in the parser.
+
+- `-s`: Enables debug traces in the scanner.
+
+### Example:
+
+```bash
+
+bin/kcomp -p -s example.k
+
+```
+## Additional Notes
+
+KComp outputs the IR to `stderr`. To capture the compiler's output, redirect `stderr` to a `.ll` file:
+
+```bash
+
+bin/kcomp example.k 2> example.ll
+
+```
