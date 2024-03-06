@@ -16,7 +16,25 @@ Before compiling or using `KComp`, ensure you have the following dependencies in
 
 - **Flex version 2.6.4**: For lexical analysis.
 
+- **Make**: For compiling the project.
+
 Please refer to the respective official documentation for installation instructions for these dependencies.
+
+For linux users, you can install these dependencies using the following commands:
+
+```bash
+
+sudo apt-get install llvm-17 clang-17 bison flex make
+
+```
+
+For macOS users, you can install these dependencies using the following commands:
+
+```bash 
+
+brew install llvm bison flex make
+
+```
 
 ## Compilation with Makefile
 

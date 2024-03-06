@@ -8,8 +8,8 @@
 %define parse.assert
 
 %code requires {
-  # include <string>
-  # include <exception>
+  #include <string>
+  #include <exception>
   class driver;
   class RootAST;
   class ExprAST;
@@ -38,7 +38,7 @@
 %define parse.error verbose
 
 %code {
-# include "driver.hpp"
+#include "driver.hpp"
 }
 
 %define api.token.prefix {TOK_}
@@ -120,6 +120,7 @@
 
 
 %%
+
 %start startsymb;
 
 startsymb:
@@ -162,10 +163,10 @@ stmts:
 
 init: 
    binding                 { $$ = $1; }
-|  assignment             { $$ = $1; };
+|  assignment              { $$ = $1; };
 
 stmt:
-  assignment            { $$ = $1; }
+  assignment             { $$ = $1; }
 | block                  { $$ = $1; }
 | ifstmt                 { $$ = $1; } 
 | forstmt                { $$ = $1; }
@@ -196,7 +197,7 @@ ifstmt:
 | "if" "(" condexp ")" stmt "else" stmt                     { $$ = new IfStmtAST($3,$5,$7); };
 
 forstmt:
-  "for" "(" init ";" condexp ";" assignment ")" stmt       { $$ = new ForStmtAST($3,$5,$7,$9); }
+  "for" "(" init ";" condexp ";" assignment ")" stmt        { $$ = new ForStmtAST($3,$5,$7,$9); }
 
 block:
   "{" stmts "}"                                             { $$ = new BlockStmtAST(std::vector<VarBindingAST*>(), $2); }
